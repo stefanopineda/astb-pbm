@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ASTB-PBM Practice · Stick, Throttle, Dichotic</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23070b12' width='64' height='64'/%3E%3Ctext x='10' y='46' font-size='36' fill='%23ffb000'%3EP%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button class="btn ghost" id="homeBtn" type="button">Home</button>
+      <div class="brand">
+        <strong>ASTB-PBM</strong>
+        <span>Practice console</span>
+      </div>
+      <div class="top-status">
+        <span class="pill" id="padPill">HOTAS —</span>
+        <span class="pill" id="hpPill">Headset —</span>
+        <span class="pill" id="mapPill">Map —</span>
+      </div>
+    </header>
+
+    <section class="view home active" id="view-home">
+      <div class="home">
+        <div class="kicker">Navy / USMC / USCG · Aviation Selection Test Battery</div>
+        <h1>Stick, throttle, and split-ear listening — on this Mac.</h1>
+        <p class="lede">
+          This is a local high-fidelity trainer for the ASTB-E Performance Based Measures
+          battery: yellow-aircraft tracking with the X-52 stick, vertical tracking with the
+          throttle, and dichotic letter/number streams isolated to the left and right cups.
+          It is built from the public PBM task descriptions, not the proprietary scoring key.
+        </p>
+
+        <div class="tiles">
+          <article class="tile">
+            <div class="idx">01 · Hardware</div>
+            <h2>Prove the rig</h2>
+            <p>Guided bench for X-52 axes/buttons and true left/right headphone isolation. Do this before any scored run.</p>
+            <div class="row"><button class="btn primary" data-go="bench" type="button">Open hardware bench</button></div>
+          </article>
+          <article class="tile">
+            <div class="idx">02 · Tracking</div>
+            <h2>Chase the target</h2>
+            <p>VTT (throttle, vertical) then ATT (stick, two-axis, inverted Y). Speed steps and adaptive redirects match the published schedule.</p>
+            <div class="row">
+              <button class="btn" data-go="vtt" type="button">VTT</button>
+              <button class="btn" data-go="att" type="button">ATT</button>
+              <button class="btn" data-go="avtt" type="button">Both</button>
+            </div>
+          </article>
+          <article class="tile">
+            <div class="idx">03 · Dichotic</div>
+            <h2>Left ear / right ear</h2>
+            <p>Simultaneous tokens. Attend one ear. Even → stick trigger. Odd → throttle thumb. Letters and the other ear are traps.</p>
+            <div class="row">
+              <button class="btn" data-go="dlt" type="button">DLT only</button>
+              <button class="btn" data-go="multi" type="button">Full stack</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="row">
+          <button class="btn primary" data-go="battery" type="button">Run full practice battery (~13 min)</button>
+          <button class="btn" data-go="emergency" type="button">Emergency stack</button>
+          <label class="tiny"><input type="checkbox" id="examAids" checked /> Training aids (token tape, ear banner)</label>
+        </div>
+
+        <div class="modes">
+          <button class="mode-card" data-go="bench" type="button"><b>Hardware bench</b><span>Axes, buttons, L/R audio</span></button>
+          <button class="mode-card" data-go="vtt" type="button"><b>VTT · 60s</b><span>Throttle vs yellow aircraft</span></button>
+          <button class="mode-card" data-go="att" type="button"><b>ATT · 60s</b><span>Stick, inverted elevator</span></button>
+          <button class="mode-card" data-go="avtt" type="button"><b>AVTT · 120s</b><span>Both tracking tasks</span></button>
+          <button class="mode-card" data-go="dlt" type="button"><b>DLT · 120s</b><span>Dichotic listening</span></button>
+          <button class="mode-card" data-go="multi" type="button"><b>Multitrack · 180s</b><span>Stick + throttle + ears</span></button>
+          <button class="mode-card" data-go="emergency" type="button"><b>Emergency · 120s</b><span>T1–T6 while tracking</span></button>
+          <button class="mode-card" data-go="battery" type="button"><b>Battery</b><span>Published module order</span></button>
+        </div>
+
+        <div class="note">
+          Plug the X-52 in with a USB-A to USB-C adapter and allow the accessory if macOS asks.
+          Put the segregated headset on, then pick it as the audio output in the bench.
+          Keyboard fallback: WASD/arrows stick, Q/E or R/F throttle, Space = even/stick,
+          Left Shift = odd/throttle, keys 1–6 = T1–T6.
+        </div>
+      </div>
+    </section>
+
+    <section class="view bench" id="view-bench">
+      <div class="bench">
+        <div class="bench-live">
+          <h3 class="panel-title">Live controls</h3>
+          <div class="row" style="margin-bottom:12px">
+            <button class="btn" id="audioUnlock" type="button">Enable audio</button>
+            <button class="btn" id="pickOutput" type="button">Choose headphones</button>
+            <select id="outputSelect"><option value="">Default output</option></select>
+          </div>
+          <div id="deviceList" class="tiny">Click anywhere on this page first. Chrome will not expose the X-52 until this tab has a user click — the HOTAS pill stays “not seen” even if the stick is plugged in and macOS already has it. Then plug in / wiggle the stick.</div>
+          <div class="meters" id="axisMeters"></div>
+          <div class="buttons" id="buttonLeds"></div>
+          <div class="ear-probes">
+            <div class="ear" id="earL"><h4>LEFT CUP</h4><div id="earLtok">idle</div></div>
+            <div class="ear" id="earR"><h4>RIGHT CUP</h4><div id="earRtok">idle</div></div>
+          </div>
+          <p class="tiny" style="margin-top:14px">
+            Stick: <code>nx</code> <span id="nxOut">0.00</span>
+            <code>ny</code> <span id="nyOut">0.00</span>
+            · Throttle <span id="thrOut">0.50</span>
+          </p>
+        </div>
+        <div class="bench-steps">
+          <h3 class="panel-title">Guided test path</h3>
+          <div class="note">Click anywhere on this page first. Chrome only exposes gamepads after a user click (browser security). Without that click, the HOTAS pill says “not seen” even when the stick is plugged in and registered at the OS.</div>
+          <div id="steps"></div>
+          <ul class="check" id="checklist"></ul>
+          <div class="row" style="margin-top:14px">
+            <button class="btn primary" id="saveMap" type="button">Save mapping</button>
+            <button class="btn" data-go="att" type="button">Skip to ATT</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view play" id="view-play">
+      <div class="play">
+        <div class="stage">
+          <div class="hud">
+            <div>
+              <div id="modeLabel">ATT</div>
+              <div class="clock" id="clock">1:00</div>
+            </div>
+            <div id="liveHint"></div>
+          </div>
+          <canvas id="stage"></canvas>
+        </div>
+        <aside class="side">
+          <h3 class="panel-title">Run</h3>
+          <div class="row">
+            <button class="btn" id="pauseBtn" type="button">Pause</button>
+            <button class="btn" id="endBtn" type="button">End</button>
+          </div>
+          <div class="stat">ATT on-target <b id="attPct">—</b></div>
+          <div class="stat">VTT on-target <b id="vttPct">—</b></div>
+          <div class="stat">DLT hits / FA <b id="dltHits">—</b></div>
+          <div class="stat">Mean DLT RT <b id="dltRt">—</b></div>
+          <div class="stat">Emergencies <b id="emHits">—</b></div>
+          <div class="dlt-tape" id="dltTape">
+            <div class="tape">LEFT<div class="tok" id="tapeL">·</div></div>
+            <div class="tape">RIGHT<div class="tok" id="tapeR">·</div></div>
+          </div>
+          <p class="legend" id="legend"></p>
+          <div class="em-grid" id="emGrid"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-debrief">
+      <div class="debrief">
+        <div class="kicker">Debrief</div>
+        <h1 id="debriefTitle">Run complete</h1>
+        <p class="lede" id="debriefLede"></p>
+        <div class="scores">
+          <div class="score"><div class="l">Composite</div><div class="v" id="scAll">—</div></div>
+          <div class="score"><div class="l">ATT</div><div class="v" id="scAtt">—</div></div>
+          <div class="score"><div class="l">VTT</div><div class="v" id="scVtt">—</div></div>
+          <div class="score"><div class="l">DLT</div><div class="v" id="scDlt">—</div></div>
+        </div>
+        <pre class="tiny" id="debriefJson" style="white-space:pre-wrap;background:#0a1018;padding:12px;border-radius:10px"></pre>
+        <div class="row" style="margin-top:16px">
+          <button class="btn primary" id="againBtn" type="button">Run again</button>
+          <button class="btn" data-go="home" type="button">Home</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
