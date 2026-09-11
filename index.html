@@ -177,3 +177,25 @@
   <script type="module" src="src/app.js"></script>
 </body>
 </html>
+<!-- Controller requests -->
+<div style="text-align:center; padding:24px; border-top:1px solid #333; margin-top:24px; color:#aaa;">
+  <p style="margin:8px 0; font-size:0.95rem;">Built for the <strong>Saitek/Logitech X-52 HOTAS</strong>.</p>
+  <p style="margin:8px 0; font-size:0.95rem;">Need support for a different controller?
+    <a href="mailto:stefano.pineda2.mil@us.navy.mil?subject=ASTB%20Trainer%20Controller%20Request&body=Controller%20model:%20%0A%0APlease%20add%20support%20for%20my%20controller:%20" style="color:#7ab8ff;">Email me</a>
+    or use the form below.</p>
+  <form action="https://formsubmit.co/stefano.pineda2.mil@us.navy.mil" method="POST" style="max-width:360px; margin:16px auto; display:flex; flex-direction:column; gap:8px;">
+    <select name="controller" required style="padding:8px; border-radius:6px; background:#222; color:#eee; border:1px solid #444;">
+      <option value="">— Select your controller —</option>
+      <option>Thrustmaster T.Flight HOTAS X</option>
+      <option>Thrustmaster T.Flight Hotas One</option>
+      <option>Logitech X-56</option>
+      <option>Saitek X-55 / Rhino</option>
+      <option>Thrustmaster Warthog</option>
+      <option>Generic gamepad (Xbox/PS)</option>
+      <option>Keyboard only</option>
+      <option>Other (describe in email follow-up)</option>
+    </select>
+    <input type="hidden" name="_subject" value="ASTB Trainer Controller Request">
+    <button type="submit" style="padding:10px; border-radius:6px; background:#2563eb; color:white; border:none; cursor:pointer;">Request Controller Support</button>
+  </form>
+</div>
